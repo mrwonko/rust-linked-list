@@ -6,6 +6,18 @@ enum List< T > {
 	},
 }
 
+impl< T > List< T > {
+	fn mk_empty() -> List< T > {
+		List::Empty
+	}
+	fn cons( value : T, list : List< T > ) -> List < T > {
+		List::Cons{ head : value, tail : Box::new( list ) }
+	}
+	fn mk_one( value : T ) -> List< T > {
+		List::cons( value, List::mk_empty() )
+	}
+}
+
 struct ListIterator< 'a, T : 'a > {
 	cur : &'a List< T >,
 }
@@ -32,11 +44,10 @@ impl < 'a, T > Iterator for ListIterator< 'a, T > {
 	}
 }
 
+// see also: "Entirely Too Many Linked Lists" for alternatives
+
 fn main() {
-	let list = List::Cons{ head : 42, tail : Box::new(
-		List::Cons{ head : 1337, tail : Box::new(
-			List::Cons{ head : -1, tail : Box::new(
-				List::Empty ) } ) } ) };
+	let list = List::cons( 42, List::cons( 1337, List::mk_one( -1 ) ) );
 	for x in &list {
 		println!( "{}", x );
 	}
